@@ -3,9 +3,15 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button } from '@edx/paragon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import {
-  injectIntl, intlShape, isRtl, getLocale,
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  injectIntl,
+  intlShape,
+  isRtl,
+  getLocale,
 } from '@edx/frontend-platform/i18n';
 import { useSelector } from 'react-redux';
 
@@ -25,45 +31,62 @@ const UnitNavigation = ({
   const {
     isFirstUnit, isLastUnit, nextLink, previousLink,
   } = useSequenceNavigationMetadata(sequenceId, unitId);
-  const { courseId } = useSelector(state => state.courseware);
+  const { courseId } = useSelector((state) => state.courseware);
 
   const renderPreviousButton = () => {
     const disabled = isFirstUnit;
     const prevArrow = isRtl(getLocale()) ? faChevronRight : faChevronLeft;
     return (
-      <Button
-        variant="outline-secondary"
-        className="previous-button mr-2 d-flex align-items-center justify-content-center"
-        disabled={disabled}
-        onClick={onClickPrevious}
-        as={disabled ? undefined : Link}
-        to={disabled ? undefined : previousLink}
-      >
-        <FontAwesomeIcon icon={prevArrow} className="mr-2" size="sm" />
-        {intl.formatMessage(messages.previousButton)}
-      </Button>
+      <>
+        {!disabled ? (
+          <Button
+            variant="outline-secondary"
+            className="previous-button mr-2 d-flex align-items-center justify-content-center"
+            disabled={disabled}
+            onClick={onClickPrevious}
+            as={disabled ? undefined : Link}
+            to={disabled ? undefined : previousLink}
+          >
+            <FontAwesomeIcon icon={prevArrow} className="mr-2" size="sm" />
+            {intl.formatMessage(messages.previousButton)}
+          </Button>
+        ) : (
+          <div />
+        )}
+      </>
     );
   };
 
   const renderNextButton = () => {
     const { exitActive, exitText } = GetCourseExitNavigation(courseId, intl);
-    const buttonText = (isLastUnit && exitText) ? exitText : intl.formatMessage(messages.nextButton);
+    const buttonText = isLastUnit && exitText
+      ? exitText
+      : intl.formatMessage(messages.nextButton);
     const disabled = isLastUnit && !exitActive;
     const nextArrow = isRtl(getLocale()) ? faChevronLeft : faChevronRight;
     return (
-      <Button
-        variant="outline-primary"
-        className="next-button d-flex align-items-center justify-content-center"
-        onClick={onClickNext}
-        disabled={disabled}
-        as={disabled ? undefined : Link}
-        to={disabled ? undefined : nextLink}
-      >
-        <UnitNavigationEffortEstimate sequenceId={sequenceId} unitId={unitId}>
-          {buttonText}
-        </UnitNavigationEffortEstimate>
-        <FontAwesomeIcon icon={nextArrow} className="ml-2" size="sm" />
-      </Button>
+      <>
+        {!disabled ? (
+          <Button
+            variant="outline-primary"
+            className="next-button d-flex align-items-center justify-content-center"
+            onClick={onClickNext}
+            disabled={disabled}
+            as={disabled ? undefined : Link}
+            to={disabled ? undefined : nextLink}
+          >
+            <UnitNavigationEffortEstimate
+              sequenceId={sequenceId}
+              unitId={unitId}
+            >
+              {buttonText}
+            </UnitNavigationEffortEstimate>
+            <FontAwesomeIcon icon={nextArrow} className="ml-2" size="sm" />
+          </Button>
+        ) : (
+          <div />
+        )}
+      </>
     );
   };
 

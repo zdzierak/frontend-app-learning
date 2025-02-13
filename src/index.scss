@@ -259,6 +259,11 @@
     }
   }
 
+  .empty-p-and-n {
+    min-width: 152px;
+    border: 1px solid $light-400 !important;
+  }
+
   .previous-btn {
     border-left-width: 0;
     margin-left: 0;

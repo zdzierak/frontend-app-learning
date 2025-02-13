@@ -34,25 +34,34 @@ const SequenceNavigation = ({
   const {
     isFirstUnit, isLastUnit, nextLink, previousLink,
   } = useSequenceNavigationMetadata(sequenceId, unitId);
-  const {
-    courseId,
-    sequenceStatus,
-  } = useSelector(state => state.courseware);
-  const isLocked = sequenceStatus === LOADED ? (
-    sequence.gatedContent !== undefined && sequence.gatedContent.gated
-  ) : undefined;
+  const { courseId, sequenceStatus } = useSelector((state) => state.courseware);
+  const isLocked = sequenceStatus === LOADED
+    ? sequence.gatedContent !== undefined && sequence.gatedContent.gated
+    : undefined;
 
   const shouldDisplayNotificationTriggerInSequence = useWindowSize().width < breakpoints.small.minWidth;
 
   const renderUnitButtons = () => {
     if (isLocked) {
       return (
-        <UnitButton unitId={unitId} title="" contentType="lock" isActive onClick={() => {}} />
+        <UnitButton
+          unitId={unitId}
+          title=""
+          contentType="lock"
+          isActive
+          onClick={() => {}}
+        />
       );
     }
     if (sequence.unitIds.length === 0 || unitId === null) {
       return (
-        <div style={{ flexBasis: '100%', minWidth: 0, borderBottom: 'solid 1px #EAEAEA' }} />
+        <div
+          style={{
+            flexBasis: '100%',
+            minWidth: 0,
+            borderBottom: 'solid 1px #EAEAEA',
+          }}
+        />
       );
     }
     return (
@@ -70,47 +79,70 @@ const SequenceNavigation = ({
     const prevArrow = isRtl(getLocale()) ? ChevronRight : ChevronLeft;
 
     return (
-      <Button
-        variant="link"
-        className="previous-btn"
-        onClick={previousHandler}
-        disabled={disabled}
-        iconBefore={prevArrow}
-        as={disabled ? undefined : Link}
-        to={disabled ? undefined : previousLink}
-      >
-        {shouldDisplayNotificationTriggerInSequence ? null : intl.formatMessage(messages.previousButton)}
-      </Button>
+      <>
+        {!disabled ? (
+          <Button
+            variant="link"
+            className="previous-btn"
+            onClick={previousHandler}
+            disabled={disabled}
+            iconBefore={prevArrow}
+            as={disabled ? undefined : Link}
+            to={disabled ? undefined : previousLink}
+          >
+            {shouldDisplayNotificationTriggerInSequence
+              ? null
+              : intl.formatMessage(messages.previousButton)}
+          </Button>
+        ) : (
+          <div className="empty-p-and-n" />
+        )}
+      </>
     );
   };
 
   const renderNextButton = () => {
     const { exitActive, exitText } = GetCourseExitNavigation(courseId, intl);
-    const buttonText = (isLastUnit && exitText) ? exitText : intl.formatMessage(messages.nextButton);
+    const buttonText = isLastUnit && exitText
+      ? exitText
+      : intl.formatMessage(messages.nextButton);
     const disabled = isLastUnit && !exitActive;
     const nextArrow = isRtl(getLocale()) ? ChevronLeft : ChevronRight;
 
     return (
-      <Button
-        variant="link"
-        className="next-btn"
-        onClick={nextHandler}
-        disabled={disabled}
-        iconAfter={nextArrow}
-        as={disabled ? undefined : Link}
-        to={disabled ? undefined : nextLink}
-      >
-        {shouldDisplayNotificationTriggerInSequence ? null : buttonText}
-      </Button>
+      <>
+        {!disabled ? (
+          <Button
+            variant="link"
+            className="next-btn"
+            onClick={nextHandler}
+            disabled={disabled}
+            iconAfter={nextArrow}
+            as={disabled ? undefined : Link}
+            to={disabled ? undefined : nextLink}
+          >
+            {shouldDisplayNotificationTriggerInSequence ? null : buttonText}
+          </Button>
+        ) : (
+          <div className="empty-p-and-n" />
+        )}
+      </>
     );
   };
 
-  return sequenceStatus === LOADED && (
-    <nav id="courseware-sequenceNavigation" className={classNames('sequence-navigation', className, { 'mr-2': shouldDisplayNotificationTriggerInSequence })}>
-      {renderPreviousButton()}
-      {renderUnitButtons()}
-      {renderNextButton()}
-    </nav>
+  return (
+    sequenceStatus === LOADED && (
+      <nav
+        id="courseware-sequenceNavigation"
+        className={classNames('sequence-navigation', className, {
+          'mr-2': shouldDisplayNotificationTriggerInSequence,
+        })}
+      >
+        {renderPreviousButton()}
+        {renderUnitButtons()}
+        {renderNextButton()}
+      </nav>
+    )
   );
 };
 

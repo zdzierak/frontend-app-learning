@@ -36,12 +36,7 @@ const appMessages = {
   'de-de': dedeCAMessages,
   'it-it': ititCAMessages,
   'pt-pt': ptptCAMessages,
-  pl: plMessages
+  pl: plMessages,
 };
 
-export default [
-  paragonMessages,
-  appMessages,
-  footerMessages,
-  headerMessages,
-];
+export default [paragonMessages, appMessages, footerMessages, headerMessages];
